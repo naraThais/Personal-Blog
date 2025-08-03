@@ -6,9 +6,10 @@ import {
   FiPlay,
   FiChevronLeft,
   FiChevronRight,
+  FiPause,
 } from "react-icons/fi";
 import { SiGithub, SiTiktok, SiGitter, SiYoutube } from "react-icons/si";
-import { useEffect, useState } from "react";
+import { useState, useRef } from "react";
 
 export const RevealBento = () => {
   return (
@@ -56,17 +57,17 @@ const Card = ({ className, children, ...rest }: CardProps) => {
 const HeaderBlock = () => (
   <Card className="col-span-12 row-span-2 md:col-span-6">
     <img
-      src="https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=John"
+      src="/lana.svg"
       alt="avatar"
-      className="mb-4 size-16 rounded-full border-2 border-red-300"
+      className="mb-4 size-20 rounded-full border-2"
     />
     <h1 className="mb-8 text-4xl font-semibold leading-tight">
-      Hi, I'm Tom.{" "}
+      Hi, I'm Nara.{" "}
       <span className="text-zinc-400">I'm a Lana Del Rey superfan.</span>
     </h1>
     <a
       href="#"
-      className="flex items-center gap-2 text-red-300 hover:underline font-medium"
+      className="flex items-center gap-2 text-zinc-500 hover:underline font-medium"
     >
       Contact me <FiArrowRight />
     </a>
@@ -76,8 +77,9 @@ const HeaderBlock = () => (
 const LanaCoverFlowBlock = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Lana Del Rey's albums (reduced for bento size)
   const albums = [
     {
       id: 1,
@@ -116,31 +118,63 @@ const LanaCoverFlowBlock = () => {
     },
   ];
 
-  const goToNext = () => {
+  const albumTracks = [
+    "/songs/album_1.mp3",
+    "/songs/album_2.mp3",
+    "/songs/album_3.mp3",
+    "/songs/album_4.mp3",
+    "/songs/album_5.mp3",
+  ];
+
+  const playAudioForIndex = (index: number) => {
+    if (!audioRef.current) return;
+
+    if (audioRef.current.src !== albumTracks[index]) {
+      audioRef.current.src = albumTracks[index];
+    }
+
+    audioRef.current.volume = 0.6;
+
+    audioRef.current
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false));
+  };
+
+  const pauseAudio = () => {
+    if (!audioRef.current) return;
+    audioRef.current.pause();
+    setIsPlaying(false);
+  };
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      pauseAudio();
+    } else {
+      playAudioForIndex(currentIndex);
+    }
+  };
+
+  const setIndexSafely = (index: number) => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prev) => (prev + 1) % albums.length);
+    setCurrentIndex(index);
+    if (isPlaying) {
+      playAudioForIndex(index);
+    }
     setTimeout(() => setIsTransitioning(false), 400);
+  };
+
+  const goToNext = () => {
+    setIndexSafely((currentIndex + 1) % albums.length);
   };
 
   const goToPrev = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => (prev - 1 + albums.length) % albums.length);
-    setTimeout(() => setIsTransitioning(false), 400);
+    setIndexSafely((currentIndex - 1 + albums.length) % albums.length);
   };
 
-  // Auto-rotate
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isTransitioning) {
-        goToNext();
-      }
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isTransitioning]);
-
-  // Generate visible items for enhanced coverflow
   const getVisibleItems = () => {
     const items = [];
     for (let i = -2; i <= 2; i++) {
@@ -158,12 +192,15 @@ const LanaCoverFlowBlock = () => {
   const currentAlbum = albums[currentIndex];
 
   return (
-    <Card className="col-span-12 md:col-span-6 row-span-4 bg-gradient-to-br from-zinc-800 via-zinc-850 to-zinc-900 overflow-hidden relative">
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+    <motion.div
+      initial="initial"
+      animate="animate"
+      transition={{ staggerChildren: 0.05 }}
+      className="col-span-12 md:col-span-6 row-span-4 bg-gradient-to-br from-zinc-800 via-zinc-850 to-zinc-900 overflow-hidden relative rounded-3xl p-6 border border-zinc-700 shadow-xl"
+    >
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none rounded-3xl" />
 
       <div className="h-full flex flex-col relative z-10">
-        {/* Header */}
         <div className="mb-6">
           <h3 className="text-xl font-bold text-red-300 mb-2 flex items-center gap-2">
             <motion.div
@@ -176,7 +213,6 @@ const LanaCoverFlowBlock = () => {
           <p className="text-sm text-zinc-400">Lana Del Rey Collection</p>
         </div>
 
-        {/* Enhanced Cover Flow */}
         <div className="flex-1 flex items-center justify-center perspective-1200 mb-6">
           <div className="relative h-48 w-full flex items-center justify-center">
             {visibleItems.map((item) => {
@@ -220,7 +256,6 @@ const LanaCoverFlowBlock = () => {
                   }}
                 >
                   <div className="relative">
-                    {/* Enhanced glow for center */}
                     {isCenter && (
                       <>
                         <motion.div
@@ -250,7 +285,6 @@ const LanaCoverFlowBlock = () => {
                       </>
                     )}
 
-                    {/* Album Cover */}
                     <div
                       className={twMerge(
                         "relative rounded-2xl overflow-hidden shadow-2xl transition-all duration-300",
@@ -267,13 +301,10 @@ const LanaCoverFlowBlock = () => {
                         className="w-full h-full object-cover"
                       />
 
-                      {/* Enhanced overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                      {/* Reflection effect */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
 
-                      {/* Play button for center with enhanced styling */}
                       {isCenter && (
                         <motion.div
                           initial={{ opacity: 0, scale: 0 }}
@@ -288,14 +319,18 @@ const LanaCoverFlowBlock = () => {
                           <motion.button
                             whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.8 }}
-                            className="w-12 h-12 rounded-full bg-gradient-to-br from-red-300 to-red-400 flex items-center justify-center text-zinc-900 shadow-xl shadow-red-300/50"
+                            onClick={togglePlay}
+                            className="w-12 h-12 rounded-full bg-gradient-to-br from-red-300 to-red-400 flex items-center justify-center text-white shadow-xl shadow-red-300/50"
                           >
-                            <FiPlay className="w-5 h-5 ml-1" />
+                            {isPlaying ? (
+                              <FiPause className="w-5 h-5 ml-1" />
+                            ) : (
+                              <FiPlay className="w-5 h-5 ml-1" />
+                            )}
                           </motion.button>
                         </motion.div>
                       )}
 
-                      {/* Album title overlay for center */}
                       {isCenter && (
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
@@ -315,7 +350,6 @@ const LanaCoverFlowBlock = () => {
           </div>
         </div>
 
-        {/* Current Album Info - Enhanced */}
         <div className="text-center mb-6 px-4">
           <motion.h4
             key={currentAlbum.id}
@@ -337,7 +371,6 @@ const LanaCoverFlowBlock = () => {
           </motion.p>
         </div>
 
-        {/* Enhanced Controls */}
         <div className="flex items-center justify-center space-x-6">
           <motion.button
             whileHover={{ scale: 1.15 }}
@@ -348,16 +381,11 @@ const LanaCoverFlowBlock = () => {
             <FiChevronLeft className="w-6 h-6" />
           </motion.button>
 
-          {/* Enhanced dots indicator */}
           <div className="flex space-x-2">
             {albums.map((_, index) => (
               <motion.button
                 key={index}
-                onClick={() => {
-                  setCurrentIndex(index);
-                  setIsTransitioning(true);
-                  setTimeout(() => setIsTransitioning(false), 400);
-                }}
+                onClick={() => setIndexSafely(index)}
                 className="relative"
                 whileHover={{ scale: 1.2 }}
               >
@@ -398,12 +426,14 @@ const LanaCoverFlowBlock = () => {
         </div>
       </div>
 
+      <audio ref={audioRef} />
+
       <style>{`
         .perspective-1200 {
           perspective: 1200px;
         }
       `}</style>
-    </Card>
+    </motion.div>
   );
 };
 
