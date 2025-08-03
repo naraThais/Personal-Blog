@@ -202,11 +202,11 @@ const LanaCoverFlowBlock = () => {
 
       <div className="h-full flex flex-col relative z-10">
         <div className="mb-6">
-          <h3 className="text-xl font-bold text-red-300 mb-2 flex items-center gap-2">
+          <h3 className="text-xl font-bold text-zinc-300 mb-2 flex items-center gap-2">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="w-3 h-3 bg-red-300 rounded-full"
+              className="w-3 h-3 bg-zinc-300 rounded-full"
             />
             Now Playing
           </h3>
@@ -259,7 +259,7 @@ const LanaCoverFlowBlock = () => {
                     {isCenter && (
                       <>
                         <motion.div
-                          className="absolute inset-0 bg-red-300/40 blur-2xl scale-125 rounded-2xl"
+                          className="absolute inset-0 bg-zinc-300/40 blur-2xl scale-125 rounded-2xl"
                           animate={{
                             opacity: [0.4, 0.7, 0.4],
                             scale: [1.25, 1.35, 1.25],
@@ -320,7 +320,7 @@ const LanaCoverFlowBlock = () => {
                             whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.8 }}
                             onClick={togglePlay}
-                            className="w-12 h-12 rounded-full bg-gradient-to-br from-red-300 to-red-400 flex items-center justify-center text-white shadow-xl shadow-red-300/50"
+                            className="w-12 h-12 rounded-full bg-gradient-to-br from-zinc-300 to-zinc-400 flex items-center justify-center text-white shadow-xl shadow-red-300/50"
                           >
                             {isPlaying ? (
                               <FiPause className="w-5 h-5 ml-1" />
@@ -393,7 +393,7 @@ const LanaCoverFlowBlock = () => {
                   className={twMerge(
                     "w-3 h-3 rounded-full transition-all duration-300 cursor-pointer",
                     index === currentIndex
-                      ? "bg-red-300 scale-125 shadow-lg shadow-red-300/50"
+                      ? "bg-zinc-300 scale-125 shadow-lg shadow-red-300/50"
                       : "bg-zinc-600 hover:bg-zinc-500"
                   )}
                 />
@@ -501,20 +501,17 @@ const AboutBlock = () => (
 
 const GalleryBlock = () => {
   const images = [
-    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&fit=crop",
-    "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&fit=crop",
-    "https://images.unsplash.com/photo-1581320548330-d07b59b1053b?w=800&fit=crop",
-    "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=800&fit=crop",
-    "https://images.unsplash.com/photo-1559028012-d853d1acbdb2?w=800&fit=crop",
-    "https://images.unsplash.com/photo-1595433562696-e6c28d0b1a2c?w=800&fit=crop",
+    "/img1.jpg",
+    "/img2.jpg",
+    "/img3.jpg",
+    "/img4.jpg",
+    "/img5.jpg",
+    "/img6.jpg",
   ];
 
   return (
     <Card className="col-span-12">
-      <h3 className="text-xl font-semibold mb-4 text-zinc-100">
-        Photo Gallery
-      </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
         {images.map((src, idx) => (
           <motion.div
             key={idx}
@@ -524,7 +521,7 @@ const GalleryBlock = () => {
             <img
               src={src}
               alt={`Gallery image ${idx + 1}`}
-              className="w-full h-48 object-cover transition-transform duration-300"
+              className="w-full h-90 object-cover transition-transform duration-300"
             />
           </motion.div>
         ))}
