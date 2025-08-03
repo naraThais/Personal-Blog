@@ -1,6 +1,7 @@
 
 Lana del Rey Blog
-<img width="560" height="657" alt="image" src="https://github.com/user-attachments/assets/8984eb94-b8bc-4dfa-8900-b283839d4c01" />
+<img width="1862" height="1293" alt="FireShot Capture 020 - Vite + React + TS -  lanadelreyblog vercel app" src="https://github.com/user-attachments/assets/2a1b8baa-72f5-4f72-9aad-19d0b0858f1a" />
+
 
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
