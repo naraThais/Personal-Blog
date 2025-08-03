@@ -1,5 +1,5 @@
 
-Lana del Rey Blog
+
 <img width="1862" height="1293" alt="FireShot Capture 020 - Vite + React + TS -  lanadelreyblog vercel app" src="https://github.com/user-attachments/assets/2a1b8baa-72f5-4f72-9aad-19d0b0858f1a" />
 
 
